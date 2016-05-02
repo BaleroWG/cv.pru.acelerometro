@@ -16,6 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+var watchID = null; 
+var radius = 50;
+
+
 var app = {
     // Application Constructor
     initialize: function() {
@@ -28,15 +33,17 @@ var app = {
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
     },
+    
+
+    
     // deviceready Event Handler
     //
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
+        
         app.receivedEvent('deviceready');
-
-        navigator.accelerometer.getCurrentAcceleration(
-            onSuccess, onError);        
+        startWatch();     
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -54,19 +61,62 @@ var app = {
 
 app.initialize();
 
-               //Run after successful transaction
-            //Let's display the accelerometer data
-            function onSuccess(acceleration) {
-                var accElement = document.getElementById('accelerometerData');
-                //accElement.innerHTML = 'Acceleration X: ' + acceleration.x + '<br /> +
-                //'Acceleration Y: ' + acceleration.y + '<br />'+
-                //    'Acceleration Z: ' + acceleration.z + '<br />' +
-                //    'Timestamp: ' + acceleration.timestamp;
-                accElement.innerHTML = acceleration.x + '<br/>' + acceleration.y + '<br/>' + acceleration.z + + '<br/> timestamp' + acceleration.timestamp;
-                
-            }
+
+function startWatch(){
+    var options = { frequency:100};
+    watchID = navigator.accelerometer.watchAcceleration(
+        onSuccess, onError, options);
+}
+
+function onSuccess(acceleration) {
+    //posición inicial XY
+    var x = 0;
+    var y = 0;
+    
+    //Velocidad
+    var vx = 0;
+    var vy = 0;
+    
+    var vMultiplier = 100; 
+    
+    var dot = document.getElementById('dot');
+    var accElement = document.getElementById('accelerometerData');
+    
+    accelX = acceleration.x;
+    accelY = acceleration.y;
+    
+    vy = vy + -(accelY);
+    vx = vx + accelX;
+    
+    y = parseInt(y + vy * vMultiplier);
+    x = parseInt(x + vx * vMultiplier);
+    
+    //límites para el movimiento
+    if (x<0) { x = 0; vx = 0; }
+    if (y<0) { y = 0; vy = 0; }
+    
+    if (x>document.documentElement.clientWidth-radius) {
+        x = document.documentElement.clientWidth-radius; vx = 0;
+    }
+    
+    if (y>document.documentElement.clientHeight-radius) {
+        y = document.documentElement.clientHeight-radius; vy = 0;
+    }
+    
+    //aplicar la posición al estilo de la posición de dot
+    dot.style.top = y + "px";
+    dot.style.left = x + "px";
+    
+    accElement.innerHTML = acceleration.x + '<br/>' + acceleration.y + 
+        '<br/>' + acceleration.z + 
+        '<br/> timestamp' + acceleration.timestamp + '<br />' +
+        'Move Top: ' +  y + 'px <br />'+
+        'Move Left: ' + x + 'px';
+    
+}
             
-            function onError(error) {
-                //Manejar cualquier error que nos podriamos enfrentar
-                alert('error');
-            } 
+function onError(error) {
+    //Manejar cualquier error que nos podriamos enfrentar
+    var accElement = document.getElementById('accelerometerData');
+    accElement.innerHTML = 'Lo siento, no puedo acceder a datos de aceleracioń'
+} 

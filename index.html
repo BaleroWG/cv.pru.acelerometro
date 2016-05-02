@@ -12,41 +12,26 @@
         <link rel="stylesheet" type="text/css" href="css/index.css">
         <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
         <title>Hello World</title>
+        
+        <style>
+            div#dot {
+                border-radius: 14px;
+                width: 25px;
+                height: 25px;
+                background: #ff0000;
+                position: absolute;
+                top: 0px;
+                left: 0px;
+            }
+        </style>
     </head>
     <body>
-        <h1>Datos del acelerómetro</h1>
+        <h1>Movimientos del acelerómetro</h1>
+        <div id="dot"></div>
         <div id="accelerometerData">Obteniendo datos...</div>
         <script type="text/javascript"
                 src="cordova.js"></script>
         <script type="text/javascript"
                 src="js/index.js"></script>        
-        <!--<script type="text/javascript">
-            //Set the event listener to run when the device is ready
-            /*
-            document.addEventListener('deviceready',
-                                      onDeviceReady, false);
-            
-            function onDeviceReady() {
-                navigator.accelerometer.getCurrentAcceleration(
-                    onSuccess, onError);
-            }
-            
-            //Run after successful transaction
-            //Let's display the accelerometer data
-            function onSuccess(acceleration) {
-                var accElement = document.getElementById('accelerometerData');
-                accElement.innerHTML = 'Acceleration X: ' + acceleration.x + '<br /> +
-                'Acceleration Y: ' + acceleration.y + '<br />'+
-                    'Acceleration Z: ' + acceleration.z + '<br />' +
-                    'Timestamp: ' + acceleration.timestamp;
-            }
-            
-            function onError(error) {
-                //Manejar cualquier error que nos podriamos enfrentar
-                alert('error');
-            }
-            */
-        </script>-->
-
     </body>
 </html>
